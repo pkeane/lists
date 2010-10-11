@@ -18,16 +18,37 @@
         </ul>
         <input type="submit" value="update">
     </form>
-    </div>
-    <div id="footer">
-        <a href="{$app_root}">lists</a> |
-        <a href="create">create a list</a> |
-        <a href="{$list->uniq_id}/form">add item</a> |
-        <a href="{$list->uniq_id}/listbox">add items</a> |
-        <a href="{$list->uniq_id}/text">add text</a> |
-        <a href="{$list->uniq_id}/update">update</a> |
-        <a href="{$list->uniq_id}">view/share</a> 
-    </div>
-    {/block}
+    <form method="post" action="{$list->uniq_id}/color">
+        <ul>
+            <li>
+            <input type="radio" name="color" value="blue" {if 'blue' == $list->color}checked{/if}>
+            <a href="{$list->uniq_id}" class="blue">{$list->name}</a>
+            </li>
+            <li>
+            <input type="radio" name="color" value="yellow" {if 'yellow' == $list->color}checked{/if}>
+            <a href="{$list->uniq_id}" class="yellow">{$list->name}</a>
+            </li>
+            <li>
+            <input type="radio" name="color" value="green" {if 'green' == $list->color}checked{/if}>
+            <a href="{$list->uniq_id}" class="green">{$list->name}</a>
+            </li>
+            <li>
+            <input type="radio" name="color" value="red" {if 'red' == $list->color}checked{/if}>
+            <a href="{$list->uniq_id}" class="red">{$list->name}</a>
+            </li>
+        </ul>
+        <input type="submit" value="set color">
+    </form>
+</div>
+<div id="footer">
+    <a href="{$app_root}">lists</a> |
+    <a href="create">create a list</a> |
+    <a href="{$list->uniq_id}/form">add item</a> |
+    <a href="{$list->uniq_id}/listbox">add items</a> |
+    <a href="{$list->uniq_id}/text">add text</a> |
+    <a href="{$list->uniq_id}/update">update</a> |
+    <a href="{$list->uniq_id}">view/share</a> 
+</div>
+{/block}
 
 

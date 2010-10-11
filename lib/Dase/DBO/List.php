@@ -19,6 +19,19 @@ class Dase_DBO_List extends Dase_DBO_Autogen_List
         return $this->items;
     }
 
+    public function asJson()
+    {
+        $set = array();
+        $set['name'] = $this->name;
+        $set['timestamp'] = $this->timestamp;
+        $set['uniq_id'] = $this->uniq_id;
+        $set['items'] = array();
+        foreach ($this->getItems() as $item) {
+            $set['items'][] = $item->text;
+        }
+        return Dase_Json::get($set);
+    }
+
     public function expunge()
     {
         foreach ($this->getItems() as $item) {
@@ -31,6 +44,7 @@ class Dase_DBO_List extends Dase_DBO_Autogen_List
     {
         $items = new Dase_DBO_Item($this->db);
         $items->list_id = $this->id;
+        $items->hidden = false;
         $this->count = $items->findCount();
         return $this->count;
     }

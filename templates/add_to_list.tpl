@@ -3,25 +3,17 @@
 {block name="title"}{$list->name}{/block}
 
 {block name="main"}
-<div id="header" {if '1' != $show_form}class="hide"{/if}>
+<div id="header">
     <form method="post">
-        {if '1' == $textarea}
-        <textarea name="text"></textarea>
-        {else}
-        <input type="text" name="text">
-        {/if}
+        <h2>Add "<span class="highlight">{$list->name}</span>" to:</h2>
+        <select name="parent_id">
+            <option value="">select one:</option>
+            {foreach item=parent_list from=$lists}
+            <option value="{$parent_list->id}">{$parent_list->name}</option>
+            {/foreach}
+        </select>
         <input type="submit" value="add">
     </form>
-</div>
-<div id="content">
-    <h2>{$list->name} <span class="count">({$list->items|@count} item{if 1 != $list->items|@count}s{/if})</span></h2>
-    <ul id="list">
-        {foreach item=item from=$list->items}
-        <li>
-        {$item->text|markdown}
-        </li>
-        {/foreach}
-    </ul>
 </div>
 <div id="footer">
     <a href="{$app_root}">lists</a> |

@@ -9,7 +9,7 @@ p {
 
 div#container {
 	margin: 0px auto;
-	width: 755px;
+	width: 600px;
 }
 
 h1, h2, h3, h4 {
@@ -28,6 +28,7 @@ div#header {
 div#content {
 	margin: 10px 0;
 	border: 4px solid #d3d3ff;
+	border: 4px solid #e3e3f3;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
@@ -93,6 +94,10 @@ ul#list li {
 	margin: 3px 0;
 }
 
+ul#lists li {
+	margin: 12px 0;
+}
+
 div.hidden {
     text-decoration: line-through;
     color: #999;
@@ -135,3 +140,19 @@ dd {
 span.count {
     color: #777;
 }
+
+span.highlight {
+    color: #009;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a.yellow { color: #ef930b; font-weight: bold;}
+a.red { color: #a11; font-weight: bold;}
+a.red { color: #9c1111; font-weight: bold;}
+a.green { color: #060; font-weight: bold;}
+a.blue { color: #457; font-weight: bold;}
+a.blue { color: #23a; font-weight: bold;}
+

@@ -7,7 +7,9 @@ class Dase_Handler_Default extends Dase_Handler
 		'/' => 'lists',
         'update' => 'updateform',
 		'{id}' => 'list',
+		'{id}/add_to_list' => 'add_to_list_form',
 		'{id}/form' => 'list_form',
+		'{id}/color' => 'color',
 		'{id}/text' => 'list_textform',
 		'{id}/update' => 'list_updateform',
 		'{id}/listbox' => 'list_listbox',
@@ -35,6 +37,7 @@ class Dase_Handler_Default extends Dase_Handler
         $list->name = $name;
         $list->uniq_id = $uniq;
         $list->hidden = false;
+        $list->color = 'blue';
         $list->insert();
 		$r->renderRedirect($uniq.'/form');
 	}
@@ -86,6 +89,52 @@ class Dase_Handler_Default extends Dase_Handler
         $r->renderResponse('list deleted');
     }
 
+    public function getAddToListForm($r) 
+	{
+		$t = new Dase_Template($r);
+        $list = new Dase_DBO_List($this->db);
+        if ($r->get('id')) {
+            $list->uniq_id = $r->get('id');
+        }
+        if (!$list->findOne()) {
+            $r->renderError(404);
+        }
+		$t->assign('list',$list);
+        $lists = new Dase_DBO_List($this->db);
+        $lists->orderBy('timestamp DESC');
+        $lists->hidden = false;
+        $set = array();
+        foreach ($lists->findAll(1) as $l) {
+            $l->getCount();
+            $set[] = $l;
+        }
+		$t->assign('lists',$set);
+		$r->renderResponse($t->fetch('add_to_list.tpl'));
+	}
+   
+	public function postToAddToListForm($r) 
+	{
+        $child_list = new Dase_DBO_List($this->db);
+        if ($r->get('id')) {
+            $child_list->uniq_id = $r->get('id');
+        }
+        if (!$child_list->findOne()) {
+            $r->renderError(404);
+        }
+        $parent_list = new Dase_DBO_List($this->db);
+        if (!$parent_list->load($r->get('parent_id'))) {
+            $r->renderError(404);
+        }
+        $url = $r->app_root.'/'.$child_list->uniq_id;
+        $text = '['.$child_list->name.']('.$url.')';
+        $item = new Dase_DBO_Item($this->db);
+        $item->list_id = $parent_list->id;
+        $item->text = $text;
+        $item->hidden = false;
+        $item->insert();
+		$r->renderRedirect($parent_list->uniq_id);
+	}
+   
 	public function getList($r) 
 	{
 		$t = new Dase_Template($r);
@@ -105,6 +154,18 @@ class Dase_Handler_Default extends Dase_Handler
             $t->assign('textarea',1);
         }
 		$r->renderResponse($t->fetch('list.tpl'));
+	}
+   
+	public function getListJson($r) 
+	{
+        $list = new Dase_DBO_List($this->db);
+        if ($r->get('id')) {
+            $list->uniq_id = $r->get('id');
+        }
+        if (!$list->findOne()) {
+            $r->renderError(404);
+        }
+		$r->renderResponse($list->asJson());
 	}
    
 	public function postToListUpdateform($r) 
@@ -168,7 +229,7 @@ class Dase_Handler_Default extends Dase_Handler
 	{
 		$t = new Dase_Template($r);
         $lists = new Dase_DBO_List($this->db);
-        $lists->orderBy('timestamp DESC');
+        $lists->orderBy('color');
         $lists->hidden = false;
         $set = array();
         foreach ($lists->findAll(1) as $l) {
@@ -209,7 +270,13 @@ class Dase_Handler_Default extends Dase_Handler
             if (isset($parts[1])) {
                 $text = '['.$parts[1].']('.$parts[0].')';
             } else {
-                $text = '['.$text.']('.$text.')';
+                $title = $text;
+                $input = @file_get_contents(trim($text)) or die("Could not access file: $text");
+                $regexp = "<title>(.*)<\/title>"; 
+                if(preg_match("/$regexp/siU", $input, $matches)) { 
+                    $title = $matches[1];
+                }
+                $text = '['.$title.']('.$text.')';
             }
         }
         $item = new Dase_DBO_Item($this->db);
@@ -240,6 +307,18 @@ class Dase_Handler_Default extends Dase_Handler
             $item->insert();
         }
 		$r->renderRedirect($list->uniq_id.'/form');
+    }
+
+    public function postToColor($r)
+    {
+        $list = new Dase_DBO_List($this->db);
+        $list->uniq_id = $r->get('id');
+        if (!$list->findOne()) {
+            $r->renderError(404);
+        }
+        $list->color = $r->get('color');
+        $list->update();
+		$r->renderRedirect('/');
     }
 }
 
