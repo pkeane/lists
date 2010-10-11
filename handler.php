@@ -9,7 +9,9 @@ class Dase_Handler_Default extends Dase_Handler
 		'{id}' => 'list',
 		'{id}/add_to_list' => 'add_to_list_form',
 		'{id}/form' => 'list_form',
-		'{id}/color' => 'color',
+		'{id}/name' => 'list_name',
+		'{id}/expunge' => 'expunge_hidden_items',
+		'{id}/color' => 'list_color',
 		'{id}/text' => 'list_textform',
 		'{id}/update' => 'list_updateform',
 		'{id}/listbox' => 'list_listbox',
@@ -153,6 +155,9 @@ class Dase_Handler_Default extends Dase_Handler
         if ($r->get('textarea')) {
             $t->assign('textarea',1);
         }
+        if ($r->get('listbox')) {
+            $t->assign('listbox',1);
+        }
 		$r->renderResponse($t->fetch('list.tpl'));
 	}
    
@@ -229,7 +234,7 @@ class Dase_Handler_Default extends Dase_Handler
 	{
 		$t = new Dase_Template($r);
         $lists = new Dase_DBO_List($this->db);
-        $lists->orderBy('color DESC');
+        $lists->orderBy('color DESC, name');
         $lists->hidden = false;
         $set = array();
         foreach ($lists->findAll(1) as $l) {
@@ -244,7 +249,7 @@ class Dase_Handler_Default extends Dase_Handler
 	{
 		$t = new Dase_Template($r);
         $lists = new Dase_DBO_List($this->db);
-        $lists->orderBy('color DESC');
+        $lists->orderBy('color DESC, name');
         $set = array();
         foreach ($lists->findAll(1) as $l) {
             $l->getCount();
@@ -309,7 +314,7 @@ class Dase_Handler_Default extends Dase_Handler
 		$r->renderRedirect($list->uniq_id.'/form');
     }
 
-    public function postToColor($r)
+    public function postToListColor($r)
     {
         $list = new Dase_DBO_List($this->db);
         $list->uniq_id = $r->get('id');
@@ -320,5 +325,35 @@ class Dase_Handler_Default extends Dase_Handler
         $list->update();
 		$r->renderRedirect('/');
     }
+
+    public function postToExpungeHiddenItems($r)
+    {
+        $list = new Dase_DBO_List($this->db);
+        $list->uniq_id = $r->get('id');
+        if (!$list->findOne()) {
+            $r->renderError(404);
+        }
+        foreach ($list->getItems() as $item) {
+            if ($item->hidden) {
+                $item->delete();
+            }
+        }
+		$r->renderRedirect($list->uniq_id);
+    }
+
+    public function postToListName($r)
+    {
+        $list = new Dase_DBO_List($this->db);
+        $list->uniq_id = $r->get('id');
+        if (!$list->findOne()) {
+            $r->renderError(404);
+        }
+        if ($r->get('name')) {
+            $list->name = $r->get('name');
+            $list->update();
+        }
+		$r->renderRedirect($list->uniq_id);
+    }
+
 }
 

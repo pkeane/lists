@@ -12,6 +12,6 @@
     </form>
 </div>
 <div id="footer">
-    <a href="{$app_root}">lists</a>
+    <a href="{$app_root}">home/lists</a>
 </div>
 {/block}

@@ -16,7 +16,7 @@
     </form>
 </div>
 <div id="footer">
-    <a href="{$app_root}">lists</a> |
+    <a href="{$app_root}">home/lists</a> |
     <a href="create">create a list</a> |
     <a href="{$list->uniq_id}/form">add item</a> |
     <a href="{$list->uniq_id}/listbox">add items</a> |

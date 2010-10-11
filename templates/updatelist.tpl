@@ -3,8 +3,12 @@
 {block name="title"}{$list->name}{/block}
 
 {block name="main"}
-<div id="content">
+<div id="content" class="list">
     <h2>{$list->name} <span class="count">({$list->items|@count} item{if 1 != $list->items|@count}s{/if})</span></h2>
+    <form method="post" action="{$list->uniq_id}/name">
+        <input type="text" name="name" value="{$list->name}">
+        <input type="submit" value="update name">
+    </form>
     <form method="post">
         <ul id="list">
             {foreach item=item from=$list->items}
@@ -16,7 +20,10 @@
             </li>
             {/foreach}
         </ul>
-        <input type="submit" value="update">
+        <input type="submit" value="hide checked items">
+    </form>
+    <form method="post" action="{$list->uniq_id}/expunge">
+        <input type="submit" value="expunge hidden items">
     </form>
     <form method="post" action="{$list->uniq_id}/color">
         <ul>
@@ -41,7 +48,7 @@
     </form>
 </div>
 <div id="footer">
-    <a href="{$app_root}">lists</a> |
+    <a href="{$app_root}">home/lists</a> |
     <a href="create">create a list</a> |
     <a href="{$list->uniq_id}/form">add item</a> |
     <a href="{$list->uniq_id}/listbox">add items</a> |

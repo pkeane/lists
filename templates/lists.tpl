@@ -15,6 +15,7 @@
     </ul>
 </div>
 <div id="footer">
+    <a href="{$app_root}">home/lists</a> |
     <a href="create">create a list</a> |
     <a href="update">update</a>
 </div>
