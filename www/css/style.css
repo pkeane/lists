@@ -50,6 +50,11 @@ form input[type="text"] {
     margin: 8px 0;
 }
 
+form input[type="checkbox"] {
+    float: left;
+    margin-right: 10px;
+}
+
 form input[type="submit"] {
     font-size: 14px;
 }
@@ -86,6 +91,11 @@ li  {
 ul#list li {
     border-bottom: 1px solid #ccc;
 	margin: 3px 0;
+}
+
+div.hidden {
+    text-decoration: line-through;
+    color: #999;
 }
 
 input.delete {

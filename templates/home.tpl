@@ -1,5 +1,7 @@
 {extends file="base.tpl"}
 
+{block name="title"}create a list{/block}
+
 {block name="main"}
 <div id="header">
     <form method="post">
@@ -10,6 +12,6 @@
     </form>
 </div>
 <div id="footer">
-    <a href="all">lists</a>
+    <a href="{$app_root}">lists</a>
 </div>
 {/block}

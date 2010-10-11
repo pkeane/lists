@@ -3,11 +3,13 @@
 class Dase_Handler_Default extends Dase_Handler
 {
 	public $resource_map = array(
-		'/' => 'home',
-		'all' => 'lists',
+		'create' => 'form',
+		'/' => 'lists',
+        'update' => 'updateform',
 		'{id}' => 'list',
 		'{id}/form' => 'list_form',
 		'{id}/text' => 'list_textform',
+		'{id}/update' => 'list_updateform',
 		'{id}/listbox' => 'list_listbox',
 	);
 
@@ -15,14 +17,14 @@ class Dase_Handler_Default extends Dase_Handler
 	{
 	}
 
-	public function getHome($r) 
+	public function getForm($r) 
 	{
 		$t = new Dase_Template($r);
 		$t->assign('uniq',md5(uniqid()));
 		$r->renderResponse($t->fetch('home.tpl'));
 	}
 
-	public function postToHome($r) 
+	public function postToForm($r) 
 	{
         $uniq = $r->get('uniq');
         $name = $r->get('name');
@@ -32,6 +34,7 @@ class Dase_Handler_Default extends Dase_Handler
         $list = new Dase_DBO_List($this->db);
         $list->name = $name;
         $list->uniq_id = $uniq;
+        $list->hidden = false;
         $list->insert();
 		$r->renderRedirect($uniq.'/form');
 	}
@@ -70,20 +73,30 @@ class Dase_Handler_Default extends Dase_Handler
         $this->getList($r);
     }
 
-	public function getList($r) 
-	{
-		$t = new Dase_Template($r);
+    public function deleteList($r)
+    {
         $list = new Dase_DBO_List($this->db);
-        if ($r->get('ascii_name')) {
-            $list->name = $r->get('ascii_name');
-        }
         if ($r->get('id')) {
             $list->uniq_id = $r->get('id');
         }
         if (!$list->findOne()) {
             $r->renderError(404);
         }
-        $list->getItems();
+        $list->expunge();
+        $r->renderResponse('list deleted');
+    }
+
+	public function getList($r) 
+	{
+		$t = new Dase_Template($r);
+        $list = new Dase_DBO_List($this->db);
+        if ($r->get('id')) {
+            $list->uniq_id = $r->get('id');
+        }
+        if (!$list->findOne()) {
+            $r->renderError(404);
+        }
+        $list->getItems(1);
 		$t->assign('list',$list);
         if ($r->get('show_form')) {
             $t->assign('show_form',1);
@@ -94,7 +107,79 @@ class Dase_Handler_Default extends Dase_Handler
 		$r->renderResponse($t->fetch('list.tpl'));
 	}
    
+	public function postToListUpdateform($r) 
+    {
+        $list = new Dase_DBO_List($this->db);
+        $list->uniq_id = $r->get('id');
+        if (!$list->findOne()) {
+            $r->renderError(404);
+        }
+        if (isset($_POST['hide'])) {
+            $hide_set = $_POST['hide'];
+        } else {
+            $hide_set = array();
+        }
+        foreach ($list->getItems() as $item) {
+            if (in_array($item->id,$hide_set)) {
+                $item->hidden = true;
+            } else {
+                $item->hidden = false;
+            }
+            $item->update();
+        }
+		$r->renderRedirect($list->uniq_id);
+    }
+
+	public function postToUpdateform($r) 
+    {
+        if (isset($_POST['hide'])) {
+            $hide_set = $_POST['hide'];
+        } else {
+            $hide_set = array();
+        }
+        $lists = new Dase_DBO_List($this->db);
+        foreach ($lists->findAll(1) as $l) {
+            if (in_array($l->id,$hide_set)) {
+                $l->hidden = true;
+            } else {
+                $l->hidden = false;
+            }
+            $l->update();
+        }
+		$r->renderRedirect('/');
+    }
+
+	public function getListUpdateform($r) 
+	{
+		$t = new Dase_Template($r);
+        $list = new Dase_DBO_List($this->db);
+        if ($r->get('id')) {
+            $list->uniq_id = $r->get('id');
+        }
+        if (!$list->findOne()) {
+            $r->renderError(404);
+        }
+        $list->getItems();
+		$t->assign('list',$list);
+		$r->renderResponse($t->fetch('updatelist.tpl'));
+	}
+   
 	public function getLists($r) 
+	{
+		$t = new Dase_Template($r);
+        $lists = new Dase_DBO_List($this->db);
+        $lists->orderBy('timestamp DESC');
+        $lists->hidden = false;
+        $set = array();
+        foreach ($lists->findAll(1) as $l) {
+            $l->getCount();
+            $set[] = $l;
+        }
+		$t->assign('lists',$set);
+		$r->renderResponse($t->fetch('lists.tpl'));
+	}
+   
+	public function getUpdateform($r) 
 	{
 		$t = new Dase_Template($r);
         $lists = new Dase_DBO_List($this->db);
@@ -105,7 +190,7 @@ class Dase_Handler_Default extends Dase_Handler
             $set[] = $l;
         }
 		$t->assign('lists',$set);
-		$r->renderResponse($t->fetch('lists.tpl'));
+		$r->renderResponse($t->fetch('updatelists.tpl'));
 	}
    
     public function postToListForm($r)
@@ -130,6 +215,7 @@ class Dase_Handler_Default extends Dase_Handler
         $item = new Dase_DBO_Item($this->db);
         $item->list_id = $list->id;
         $item->text = $text;
+        $item->hidden = false;
         $item->insert();
 		$r->renderRedirect($list->uniq_id.'/form');
     }
@@ -150,6 +236,7 @@ class Dase_Handler_Default extends Dase_Handler
             $item = new Dase_DBO_Item($this->db);
             $item->list_id = $list->id;
             $item->text = $item_text;
+            $item->hidden = false;
             $item->insert();
         }
 		$r->renderRedirect($list->uniq_id.'/form');
