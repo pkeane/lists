@@ -11,7 +11,7 @@
             <li>
             <div {if $list->hidden}class="hidden"{/if}>
                 <input type="checkbox" {if $list->hidden}checked{/if} name="hide[]" value="{$list->id}">
-                <a href="{$list->uniq_id}">{$list->name}</a> 
+                <a class="{$list->color}" href="{$list->uniq_id}">{$list->name}</a> 
                 <span class="count">({$list->count} item{if 1 != $list->count}s{/if})</span>
             </div>
             </li>

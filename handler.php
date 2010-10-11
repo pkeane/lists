@@ -229,7 +229,7 @@ class Dase_Handler_Default extends Dase_Handler
 	{
 		$t = new Dase_Template($r);
         $lists = new Dase_DBO_List($this->db);
-        $lists->orderBy('color');
+        $lists->orderBy('color DESC');
         $lists->hidden = false;
         $set = array();
         foreach ($lists->findAll(1) as $l) {
@@ -244,7 +244,7 @@ class Dase_Handler_Default extends Dase_Handler
 	{
 		$t = new Dase_Template($r);
         $lists = new Dase_DBO_List($this->db);
-        $lists->orderBy('timestamp DESC');
+        $lists->orderBy('color DESC');
         $set = array();
         foreach ($lists->findAll(1) as $l) {
             $l->getCount();
