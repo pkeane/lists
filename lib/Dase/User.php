@@ -30,8 +30,15 @@ Class Dase_User
 	}
 
 	//must be supplied by db user class:
-	//public function retrieveByEid($eid) {}	
+    public function retrieveByEid($eid) 
+    {
+        return $this;
+    }	
 
+    public function setHttpPassword($token) 
+    {
+        return;
+    }
 }
 
 

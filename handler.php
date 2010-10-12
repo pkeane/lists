@@ -12,6 +12,7 @@ class Dase_Handler_Default extends Dase_Handler
 		'{id}/name' => 'list_name',
 		'{id}/expunge' => 'expunge_hidden_items',
 		'{id}/color' => 'list_color',
+		'{id}/access' => 'list_access',
 		'{id}/text' => 'list_textform',
 		'{id}/update' => 'list_updateform',
 		'{id}/listbox' => 'list_listbox',
@@ -19,6 +20,10 @@ class Dase_Handler_Default extends Dase_Handler
 
 	protected function setup($r)
 	{
+        if ($r->method != 'get' || $r->resource != 'list') {
+            //require login
+            $r->getUser('http');
+        }
 	}
 
 	public function getForm($r) 
@@ -146,6 +151,9 @@ class Dase_Handler_Default extends Dase_Handler
         }
         if (!$list->findOne()) {
             $r->renderError(404);
+        }
+        if (!$list->is_public) {
+            $r->getUser('http');
         }
         $list->getItems(1);
 		$t->assign('list',$list);
@@ -350,6 +358,24 @@ class Dase_Handler_Default extends Dase_Handler
         }
         if ($r->get('name')) {
             $list->name = $r->get('name');
+            $list->update();
+        }
+		$r->renderRedirect($list->uniq_id);
+    }
+
+    public function postToListAccess($r)
+    {
+        $list = new Dase_DBO_List($this->db);
+        $list->uniq_id = $r->get('id');
+        if (!$list->findOne()) {
+            $r->renderError(404);
+        }
+        if ('public' == $r->get('access')) {
+            $list->is_public = 1;
+            $list->update();
+        }
+        if ('private' == $r->get('access')) {
+            $list->is_public = 0;
             $list->update();
         }
 		$r->renderRedirect($list->uniq_id);

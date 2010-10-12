@@ -46,6 +46,19 @@
         </ul>
         <input type="submit" value="set color">
     </form>
+    <form method="post" action="{$list->uniq_id}/access">
+        <ul>
+            <li>
+            <input type="radio" name="access" value="private" {if '1' != $list->is_public}checked{/if}>
+            private
+            </li>
+            <li>
+            <input type="radio" name="access" value="public" {if '1' == $list->is_public}checked{/if}>
+            public
+            </li>
+        </ul>
+        <input type="submit" value="set access level">
+    </form>
 </div>
 <div id="footer">
     <a href="{$app_root}">home/lists</a> |
@@ -54,7 +67,7 @@
     <a href="{$list->uniq_id}/listbox">add items</a> |
     <a href="{$list->uniq_id}/text">add text</a> |
     <a href="{$list->uniq_id}/update">update</a> |
-    <a href="{$list->uniq_id}">view/share</a> 
+    <a href="{$list->uniq_id}">view</a> 
 </div>
 {/block}
 
