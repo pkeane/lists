@@ -45,6 +45,7 @@ class Dase_Handler_Default extends Dase_Handler
         $list->uniq_id = $uniq;
         $list->hidden = false;
         $list->color = 'blue';
+        $list->is_public = true;
         $list->insert();
 		$r->renderRedirect($uniq.'/form');
 	}
