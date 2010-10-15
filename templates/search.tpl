@@ -12,10 +12,15 @@
     </div>
     <h2>Search: "{$q}" <span class="count">({$lists|@count} item{if 1 != $lists|@count}s{/if})</span></h2>
     <ul id="lists">
-        {foreach item=list from=$lists}
+        {foreach key=list_id item=list from=$lists}
         <li>
         <a class="{$list->color}" href="{$list->uniq_id}">{$list->name}</a> 
         <span class="count">({$list->count} item{if 1 != $list->count}s{/if})</span>
+        <ul class="searchsub">
+            {foreach item=txt from=$texts.$list_id}
+            <li>{$txt|markdown}</li>
+            {/foreach}
+        </ul>
         </li>
         {/foreach}
     </ul>

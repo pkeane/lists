@@ -102,6 +102,14 @@ li  {
 	margin: 5px 0;
 }
 
+ul.searchsub {
+	margin: 4px 18px;
+}
+
+li.searchsub  {
+	margin: 2px 0;
+}
+
 ul#list li {
     border-bottom: 1px solid #ccc;
 	margin: 3px 0;

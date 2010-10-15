@@ -34,9 +34,14 @@ class Dase_Handler_Default extends Dase_Handler
         $q = $r->get('q');
         $dbh = $this->db->getDbh();
         $lists = array();
+        $texts = array();
         $sth = $dbh->prepare('select list.name,item.list_id, item.text from item, list where item.list_id = list.id  and text like ?');
         $sth->execute(array('%'.$q.'%'));
         while ($row = $sth->fetch()) { 
+            if (!isset($texts[$row['list_id']])) {
+                $texts[$row['list_id']] = array();
+            }
+            $texts[$row['list_id']][] = $row['text'];
             $list = new Dase_DBO_List($this->db);
             $list->load($row['list_id']);
             $list->getCount();
@@ -51,6 +56,7 @@ class Dase_Handler_Default extends Dase_Handler
             $lists[$row['id']] = $list;
         }
 		$t->assign('lists',$lists);
+		$t->assign('texts',$texts);
 		$t->assign('q',$q);
 		$r->renderResponse($t->fetch('search.tpl'));
     }
