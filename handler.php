@@ -6,6 +6,8 @@ class Dase_Handler_Default extends Dase_Handler
 		'create' => 'form',
 		'/' => 'lists',
         'update' => 'updateform',
+        'search' => 'search',
+        'item/{id}/edit' => 'item_edit_form',
 		'{id}' => 'list',
 		'{id}/add_to_list' => 'add_to_list_form',
 		'{id}/form' => 'list_form',
@@ -25,6 +27,33 @@ class Dase_Handler_Default extends Dase_Handler
             $r->getUser('http');
         }
 	}
+
+    public function getSearch($r)
+    {
+		$t = new Dase_Template($r);
+        $q = $r->get('q');
+        $dbh = $this->db->getDbh();
+        $lists = array();
+        $sth = $dbh->prepare('select list.name,item.list_id, item.text from item, list where item.list_id = list.id  and text like ?');
+        $sth->execute(array('%'.$q.'%'));
+        while ($row = $sth->fetch()) { 
+            $list = new Dase_DBO_List($this->db);
+            $list->load($row['list_id']);
+            $list->getCount();
+            $lists[$row['list_id']] = $list;
+        }
+        $sth2 = $dbh->prepare("select id,name from list where name like ?");
+        $sth2->execute(array('%'.$q.'%'));
+        while ($row = $sth2->fetch()) { 
+            $list = new Dase_DBO_List($this->db);
+            $list->load($row['id']);
+            $list->getCount();
+            $lists[$row['id']] = $list;
+        }
+		$t->assign('lists',$lists);
+		$t->assign('q',$q);
+		$r->renderResponse($t->fetch('search.tpl'));
+    }
 
 	public function getForm($r) 
 	{
@@ -379,6 +408,25 @@ class Dase_Handler_Default extends Dase_Handler
             $list->is_public = 0;
             $list->update();
         }
+		$r->renderRedirect($list->uniq_id);
+    }
+
+    public function getItemEditForm($r) 
+    {
+		$t = new Dase_Template($r);
+        $item = new Dase_DBO_Item($this->db);
+        $item->load($r->get('id'));
+		$t->assign('item',$item);
+		$r->renderResponse($t->fetch('item_edit_form.tpl'));
+    }
+
+    public function postToItemEditForm($r) 
+    {
+        $item = new Dase_DBO_Item($this->db);
+        $item->load($r->get('id'));
+        $item->text = $r->get('text');
+        $item->update();
+        $list = $item->getList();
 		$r->renderRedirect($list->uniq_id);
     }
 

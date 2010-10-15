@@ -10,7 +10,7 @@
             <input type="submit" value="search">
         </form>
     </div>
-    <h2>Lists <span class="count">({$lists|@count} item{if 1 != $lists|@count}s{/if})</span></h2>
+    <h2>Search: "{$q}" <span class="count">({$lists|@count} item{if 1 != $lists|@count}s{/if})</span></h2>
     <ul id="lists">
         {foreach item=list from=$lists}
         <li>

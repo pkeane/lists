@@ -60,6 +60,19 @@ form input[type="submit"] {
     font-size: 14px;
 }
 
+form input[name="q"] {
+    font-size: 10px;
+    width: 100px;
+}
+
+form input[value="search"] {
+    font-size: 10px;
+}
+
+div.search {
+    float: right;
+}
+
 form h1 {
     font-size: 40px;
     font-weight: normal;
@@ -164,3 +177,7 @@ div.list form {
     padding: 8px 12px 12px 12px;
 }
 
+a.modify {
+    color: #33c;
+    float: right;
+}

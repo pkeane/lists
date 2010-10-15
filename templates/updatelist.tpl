@@ -15,6 +15,7 @@
             <li>
             <div {if $item->hidden}class="hidden"{/if}>
                 <input type="checkbox" {if $item->hidden}checked{/if} name="hide[]" value="{$item->id}">
+                <a href="item/{$item->id}/edit" class="modify">[edit]</a>
                 {$item->text|markdown}
             </div>
             </li>
