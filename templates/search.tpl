@@ -18,7 +18,7 @@
         <span class="count">({$list->count} item{if 1 != $list->count}s{/if})</span>
         <ul class="searchsub">
             {foreach item=txt from=$texts.$list_id}
-            <li>{$txt|markdown}</li>
+            <li>{$txt}</li>
             {/foreach}
         </ul>
         </li>
