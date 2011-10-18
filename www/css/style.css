@@ -1,5 +1,5 @@
 body {
-	font-family: "Georgia", serif;
+	font-family: "Trebuchet MS", sans-serif;
 	background-color: #fff;
 }
 
@@ -116,7 +116,7 @@ ul#list li {
 }
 
 ul#lists li {
-	margin: 12px 0;
+	margin: 8px 0;
 }
 
 div.hidden {
@@ -164,6 +164,9 @@ span.count {
 
 span.highlight {
     color: #009;
+}
+
+a {
 }
 
 a:hover {

@@ -3,8 +3,8 @@
 $conf['db']['type'] = 'mysql';
 $conf['db']['host'] = 'localhost';
 $conf['db']['name'] = 'lists';
-$conf['db']['user'] = 'list_user';
-$conf['db']['pass'] = 'list_user';
+$conf['db']['user'] = 'lists_user';
+$conf['db']['pass'] = 'lists_user';
 $conf['db']['table_prefix'] = '';
 
 $conf['app']['main_title'] = 'Lists';
