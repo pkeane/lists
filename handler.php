@@ -214,6 +214,9 @@ class Dase_Handler_Default extends Dase_Handler
         if (!$list->findOne()) {
             $r->renderError(404);
         }
+        if($r->get('callback')){
+            $r->renderResponse($r->get('callback').'('.$list->asJson().');');
+        }
 		$r->renderResponse($list->asJson());
 	}
    
