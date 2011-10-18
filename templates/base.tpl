@@ -16,6 +16,8 @@
 		{/block}
 
 		{block name="head"}{/block}
+		<script src="www/js/jquery.js"></script>
+		<script src="www/js/showdown.js"></script>
 		<script src="www/js/script.js"></script>
 
 	</head>

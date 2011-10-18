@@ -3,6 +3,7 @@
 class Dase_Handler_Default extends Dase_Handler
 {
 	public $resource_map = array(
+		'test' => 'test',
 		'create' => 'form',
 		'/' => 'lists',
         'update' => 'updateform',
@@ -27,6 +28,12 @@ class Dase_Handler_Default extends Dase_Handler
             $r->getUser('http');
         }
 	}
+
+    public function getTest($r)
+    {
+		$t = new Dase_Template($r);
+		$r->renderResponse($t->fetch('test.tpl'));
+    }
 
     public function getSearch($r)
     {

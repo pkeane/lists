@@ -1,13 +1,36 @@
 var Dase = {};
 
+String.prototype.trim = function() {
+    return this.replace(/^\s+|\s+$/g,"");
+}
+
 $(document).ready(function() {
 	Dase.initDelete('topMenu');
 	Dase.initToggle('target');
 	Dase.initToggle('email');
-	Dase.initSortable('target');
+	//Dase.initSortable('target');
 	Dase.initUserPrivs();
 	Dase.initFormDelete();
+	Dase.initList();
 });
+
+
+Dase.initList = function() {
+    $('link[rel="list"]').each(function() {
+        var url = $(this).attr('href');
+        var id = $(this).attr('class');
+        var converter = new Showdown.converter();
+        $.getJSON(url,null,function(json) {
+            var out = '<ul class="list">';
+            for (var i in json.items) {
+                var html = converter.makeHtml($.trim(json.items[i]));
+                out += '<li>'+html+'</li>';
+            }
+            out += '</ul>';
+            $('#'+id).html(out);
+        });
+    });
+};
 
 Dase.initToggle = function(id) {
 	$('#'+id).find('a[class="toggle"]').click(function() {
